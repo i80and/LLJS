@@ -1541,9 +1541,10 @@
     var cachedMEMORY = program.frame.cachedMEMORY;
     if (cachedMEMORY) {
       var mdecl;
+      var isMemoryFile = name.match(/memory.l?js$/)
       // todo: causes all files named "memory.ljs" to be compiled with the memory
       // var pointing at exports, probably want a better way of doing that...
-      if (name === "memory") {
+      if (isMemoryFile) {
         mdecl = new VariableDeclarator(cachedMEMORY, new Identifier("exports"));
       } else if (loadInstead) {
         mdecl = new VariableDeclarator(cachedMEMORY, new SequenceExpression([
@@ -1554,7 +1555,7 @@
       }
       body.push(new VariableDeclaration("const", [mdecl]));
       // todo: broken just like above
-      if (name !== "memory") {
+      if (!isMemoryFile) {
         assert (memcheck !== undefined);
         body.push(new ExpressionStatement(
           new CallExpression(new MemberExpression(cachedMEMORY, new Identifier("set_memcheck")),

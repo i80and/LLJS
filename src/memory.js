@@ -1,5 +1,5 @@
 (function (exports) {
-  const $M = exports;
+  const $M = require('memory');
   var NODE_JS = 1;
   var JS_SHELL = 2;
   var BROWSER = 3;
@@ -52,7 +52,7 @@
     const $U1 = $M.U1;
     var _, _$1;
     for (var i = 0; i < length; i = i + 1 | 0) {
-      $U1[_ = dst, dst = dst + 1, _] = $U1[_$1 = src, src = src + 1, _$1];
+      $U1[(_ = dst, dst = dst + 1, _)] = $U1[(_$1 = src, src = src + 1, _$1)];
     }
     return dst;
   }
@@ -60,7 +60,7 @@
     const $U2 = $M.U2;
     var _, _$1;
     for (var i = 0; i < length; i = i + 1 | 0) {
-      $U2[_ = dst, dst = dst + 1, _] = $U2[_$1 = src, src = src + 1, _$1];
+      $U2[(_ = dst, dst = dst + 1, _)] = $U2[(_$1 = src, src = src + 1, _$1)];
     }
     return dst;
   }
@@ -68,7 +68,7 @@
     const $U4 = $M.U4;
     var _, _$1;
     for (var i = 0; i < length; i = i + 1 | 0) {
-      $U4[_ = dst, dst = dst + 1, _] = $U4[_$1 = src, src = src + 1, _$1];
+      $U4[(_ = dst, dst = dst + 1, _)] = $U4[(_$1 = src, src = src + 1, _$1)];
     }
     return dst;
   }
@@ -126,7 +126,7 @@
       mem[name] = val;
       return true;
     };
-    return Proxy.create(handler);
+    return new Proxy({}, handler);
   }
   function reset() {
     setInMemory(true);
@@ -179,7 +179,7 @@
       return 0;
     }
     var header = buffer;
-    $U4[header + 1] = nUnits;
+    $U4[(header) + 1] = nUnits;
     if (enable_memcheck) {
       // prevent double free recording on morecore
       ck.setAlloc(header + 1 * 2 << 2, true);
@@ -198,16 +198,16 @@
     setInMemory(true);
     if ((prevp = freep) === 0) {
       $U4[base] = freep = prevp = base;
-      $U4[base + 1] = 0;
+      $U4[(base) + 1] = 0;
     }
     for (p = $U4[prevp]; true; prevp = p, p = $U4[p]) {
-      if ($U4[p + 1] >= nUnits) {
-        if ($U4[p + 1] === nUnits) {
+      if ($U4[(p) + 1] >= nUnits) {
+        if ($U4[(p) + 1] === nUnits) {
           $U4[prevp] = $U4[p];
         } else {
-          $U4[p + 1] = ($U4[p + 1] - nUnits | 0) >>> 0;
-          p = p + $U4[p + 1] * 2;
-          $U4[p + 1] = nUnits;
+          $U4[(p) + 1] = ($U4[(p) + 1] - nUnits | 0) >>> 0;
+          p = p + $U4[(p) + 1] * 2;
+          $U4[(p) + 1] = nUnits;
         }
         freep = prevp;
         if (enable_memcheck) {
@@ -228,9 +228,8 @@
     setInMemory(false);
     return 0;
   }
-  function free(a) {
+  function free(ap) {
     const $U4 = $M.U4;
-    var ap = a;
     var bp = (ap >> 2) - 1 * 2, p = 0;
     if (enable_memcheck) {
       setInMemory(true);
@@ -238,9 +237,9 @@
         // this byte actually was malloced before, reset it
         ck.setAlloc(ap, false);
         // this memory chunk is no longer addressable
-        ck.setAddressable(ap, $U4[bp + 1], false);
+        ck.setAddressable(ap, $U4[(bp) + 1], false);
         // this memory chunk is no longer defined
-        ck.setDefined(ap, $U4[bp + 1], false);
+        ck.setDefined(ap, $U4[(bp) + 1], false);
       } else {
         // this byte was never allocated, trying to free the wrong thing
         ck.addDoubleFreeError(ap);
@@ -251,14 +250,14 @@
         break;
       }
     }
-    if (bp + $U4[bp + 1] * 2 === $U4[p]) {
-      $U4[bp + 1] = ($U4[bp + 1] + $U4[$U4[p] + 1] | 0) >>> 0;
+    if (bp + $U4[(bp) + 1] * 2 === $U4[p]) {
+      $U4[(bp) + 1] = ($U4[(bp) + 1] + $U4[($U4[p]) + 1] | 0) >>> 0;
       $U4[bp] = $U4[$U4[p]];
     } else {
       $U4[bp] = $U4[p];
     }
-    if (p + $U4[p + 1] * 2 == bp) {
-      $U4[p + 1] = ($U4[p + 1] + $U4[bp + 1] | 0) >>> 0;
+    if (p + $U4[(p) + 1] * 2 == bp) {
+      $U4[(p) + 1] = ($U4[(p) + 1] + $U4[(bp) + 1] | 0) >>> 0;
       $U4[p] = $U4[bp];
     } else {
       $U4[p] = bp;
@@ -349,4 +348,4 @@
   exports.memcheck_call_pop = ck.memcheck_call_pop;
   exports.memcheck_call_push = ck.memcheck_call_push;
   exports.memcheck_call_reset = ck.memcheck_call_reset;
-}.call(this, typeof exports === 'undefined' ? memory = {} : exports));
+}.call(this, typeof exports === 'undefined' ? src_memory_ljs = {} : exports));

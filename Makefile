@@ -27,22 +27,22 @@ all: main node sm test bench
 test: node sm
 	@echo "======================"
 	@echo "Running node tests..."
-	(export NODE_PATH="$(build_node):$$NODE_PATH" && node --harmony_proxies $(build_node)/test-memcheck.js)
+	(export NODE_PATH="$(build_node):$$NODE_PATH" && node $(build_node)/test-memcheck.js)
 	@echo "======================"
 	@echo "Running spidermonkey tests..."
-	(cd $(build_sm) && js -n -m test-memcheck.js)
+	(cd $(build_sm) && js -jm test-memcheck.js)
 
 bench: node sm
 	@echo "======================"
 	@echo "Running node benchmarks..."
 	@echo "== nbody =="
-	(export NODE_PATH="$(build_node):$$NODE_PATH" && node --harmony_proxies $(build_node)/access-nbody.js)
+	(export NODE_PATH="$(build_node):$$NODE_PATH" && node $(build_node)/access-nbody.js)
 	@echo "\n== nbody (memcheck) =="
-	(export NODE_PATH="$(build_node):$$NODE_PATH" && node --harmony_proxies $(build_node)/access-nbody-memcheck.js)
+	(export NODE_PATH="$(build_node):$$NODE_PATH" && node $(build_node)/access-nbody-memcheck.js)
 	@echo "\n== linked list =="
-	(export NODE_PATH="$(build_node):$$NODE_PATH" && node --harmony_proxies $(build_node)/linked-list.js)
+	(export NODE_PATH="$(build_node):$$NODE_PATH" && node $(build_node)/linked-list.js)
 	@echo "\n== linked list (memcheck) =="
-	(export NODE_PATH="$(build_node):$$NODE_PATH" && node --harmony_proxies $(build_node)/linked-list-memcheck.js)
+	(export NODE_PATH="$(build_node):$$NODE_PATH" && node $(build_node)/linked-list-memcheck.js)
 	@echo "======================"
 	@echo "Running spdiermonkey benchmarks..."
 	@echo "== nbody =="
